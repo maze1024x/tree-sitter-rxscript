@@ -2,7 +2,7 @@
   "name": "tree-sitter-rxscript",
   "version": "0.0.41",
   "description": "Grammar definition of the RxScript programming language",
-  "main": "index.js",
+  "main": "bindings/node",
   "author": "maze1024x",
   "license": "MIT",
   "repository": "https://github.com/maze1024x/tree-sitter-rxscript",
