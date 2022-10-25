@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-rxscript",
-  "version": "0.0.41",
+  "version": "0.1.0",
   "description": "Grammar definition of the RxScript programming language",
   "main": "bindings/node",
   "author": "maze1024x",
