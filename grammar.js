@@ -13,8 +13,9 @@ const Int = /\-?0[xX][0-9A-Fa-f]+|\-?0[oO][0-7]+|\-?0[bB][01]+|\-?\d+/
 const Float = /\-?\d+(\.\d+)?[Ee][\+\-]?\d+|\-?\d+\.\d+/
 const Byte = /\\x[0-9A-Fa-f][0-9A-Fa-f]/
 const Char = /`.`|\\u[0-9A-Fa-f]+|\\[a-z]/
-const Name = /[^0-9\{\}\[\]\(\)\.,:;@\|\&\\'"` \t\r　\n][^\{\}\[\]\(\)\.,:;@\|\&\\'"` \t\r　\n]*/
+const Name = /[^\{\}\[\]\(\)\.,:;@\|\&\\'"` \t\r　\n]+/
 
+const Word = $ => $.name
 const IgnoreRule = $ => Comment
 const IgnoreTokens = [Blank, LF]
 const IgnoreRuleKey = 'tree_sitter_ignore_rule'
@@ -22,6 +23,7 @@ const IgnoreRuleKey = 'tree_sitter_ignore_rule'
 module.exports = grammar({
     name: 'rxscript',
     extras: $ => [$[IgnoreRuleKey], ...IgnoreTokens],
+    word: Word,
     rules: (raw => {
         let rules = {}
         for (let [k,v] of Object.entries(raw)) {
@@ -34,7 +36,7 @@ module.exports = grammar({
         source_file: $ => seq(optional($.shebang), $.ns, repeat($.alias), repeat($.stmt)),
         shebang: $ => Pragma,
         ns: $ => seq('namespace', optional($.name), '::'),
-        name: $ => Name,
+        name: $ => token(prec(-2, Name)),
         alias: $ => seq('using', optional($.alias_name), $.alias_target),
         alias_name: $ => seq($.name, '='),
         alias_target: $ => choice($.alias_to_ns, $.alias_to_ref_base),
@@ -85,9 +87,8 @@ module.exports = grammar({
         pipe_get: $ => seq('.', $.name),
         pipe_interior: $ => seq('.', '(', $.ref_base, ')'),
         term: $ => choice($.infix_term, $.lambda, $.if, $.when, $.each, $.block, $.ref_term, $.int, $.float, $.char, $.bytes, $.string),
-        infix_term: $ => seq('(', $.infix_left, $.operator, $.infix_right, ')'),
+        infix_term: $ => seq('(', $.infix_left, $.ref, $.infix_right, ')'),
         infix_left: $ => $.expr,
-        operator: $ => $.ref,
         infix_right: $ => $.expr,
         lambda: $ => seq('{', optional($.pattern), optional($.lambda_self), '=>', $.expr, '}'),
         lambda_self: $ => seq('&', $.name),

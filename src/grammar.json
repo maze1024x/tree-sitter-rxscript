@@ -1,5 +1,6 @@
 {
   "name": "rxscript",
+  "word": "name",
   "rules": {
     "source_file": {
       "type": "SEQ",
@@ -66,8 +67,15 @@
       ]
     },
     "name": {
-      "type": "PATTERN",
-      "value": "[^0-9\\{\\}\\[\\]\\(\\)\\.,:;@\\|\\&\\\\'\"` \\t\\r　\\n][^\\{\\}\\[\\]\\(\\)\\.,:;@\\|\\&\\\\'\"` \\t\\r　\\n]*"
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": -2,
+        "content": {
+          "type": "PATTERN",
+          "value": "[^\\{\\}\\[\\]\\(\\)\\.,:;@\\|\\&\\\\'\"` \\t\\r　\\n]+"
+        }
+      }
     },
     "alias": {
       "type": "SEQ",
@@ -1323,7 +1331,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "operator"
+          "name": "ref"
         },
         {
           "type": "SYMBOL",
@@ -1338,10 +1346,6 @@
     "infix_left": {
       "type": "SYMBOL",
       "name": "expr"
-    },
-    "operator": {
-      "type": "SYMBOL",
-      "name": "ref"
     },
     "infix_right": {
       "type": "SYMBOL",
